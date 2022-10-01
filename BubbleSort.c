@@ -1,12 +1,13 @@
 #include <stdio.h>
+
 #define maxAmountOfElements 100
 
 
-void bubbleSort (float numbersForSort[], int amountNumbersToSort) {
+void bubbleSort(float numbersForSort[], int amountNumbersToSort) {
     float copyOfValue = 0;
     for (int i = 0; i < amountNumbersToSort - 1; i++) {
         for (int j = i; j < amountNumbersToSort; j++) {
-            if (numbersForSort[i] < numbersForSort[j]) {
+            if (numbersForSort[i] > numbersForSort[j]) {
                 copyOfValue = numbersForSort[i];
                 numbersForSort[i] = numbersForSort[j];
                 numbersForSort[j] = copyOfValue;
@@ -17,13 +18,13 @@ void bubbleSort (float numbersForSort[], int amountNumbersToSort) {
 
 
 int main() {
-    printf("This program sorts your array of numbers from big to small numbers\nEnter the amount of elements in "
+    printf("This program sorts your array of numbers from small to big numbers\nEnter the amount of elements in "
            "array (only 100 and less): ");
     int amountNumbersToSort = 0;
     float numbersForSort[maxAmountOfElements] = {0};
     scanf_s("%d", &amountNumbersToSort);
-    while (amountNumbersToSort <= 0) {
-        printf("you can not sort this amount of elements, try again\nEnter the amount of elements in array \n"
+    while (amountNumbersToSort <= 0 || amountNumbersToSort > 100) {
+        printf("you can not sort this amount of elements, try again\nEnter the amount of elements in array "
                "(only 100 and less): ");
         scanf_s("%d", &amountNumbersToSort);
     }
@@ -36,7 +37,8 @@ int main() {
     bubbleSort(numbersForSort, amountNumbersToSort);
     printf("Now your array looks like this: ");
     for (int i = 0; i < amountNumbersToSort; i++) {
-        printf("%0.2f, ", numbersForSort[i]);
+        printf("%0.2f ", numbersForSort[i]);
     }
+    printf("\n");
     return 0;
 }
