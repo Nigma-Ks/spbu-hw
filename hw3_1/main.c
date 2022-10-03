@@ -50,7 +50,6 @@ void quickSort(float arrayForSort[], int startIndex, int finishIndex) {
             arrayForSort[startIndex] = arrayForSort[firstIndexWithBigger];
             arrayForSort[firstIndexWithBigger] = copyOfValue;
         }
-        printf("\n");
         if (firstIndexWithBigger - startIndex < 10) {
             insertionSort(arrayForSort, startIndex, firstIndexWithBigger - 1);
         } else {
