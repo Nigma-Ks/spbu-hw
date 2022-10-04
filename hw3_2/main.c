@@ -56,18 +56,18 @@ bool binarySearch(const int arrayInWhichFind[], int amountOfElementsInArray, int
 int main() {
     srand(time(0));
     printf("This program generates array with n integer elements (from -%d to %d), \nthen generates k integer "
-           "numbers (from -%d to %d)\nthen checks if any of k numbers in array\nEnter n (only 200 or less): ",
+           "numbers (from -%d to %d)\nthen checks if any of k numbers in array\nEnter n: ",
            (int) range / 2, (int) range / 2, (int) range / 2, (int) range / 2);
     int amountOfElements = 0, amountOfElementsToFind = 0;
     scanf_s("%d", &amountOfElements);
-    while (amountOfElements <= 0 || amountOfElements > 200) {
-        printf("Incorrect input, try again\nEnter n (only 200 or less): ");
+    while (amountOfElements <= 0) {
+        printf("Incorrect input, try again\nEnter n: ");
         scanf_s("%d", &amountOfElements);
     }
-    printf("Enter k (only 200 and less): ");
+    printf("Enter k: ");
     scanf_s("%d", &amountOfElementsToFind);
-    while (amountOfElementsToFind <= 0 || amountOfElementsToFind > 200) {
-        printf("Incorrect input, try again\nEnter k (only 200 or less): ");
+    while (amountOfElementsToFind <= 0) {
+        printf("Incorrect input, try again\nEnter k: ");
         scanf_s("%d", &amountOfElementsToFind);
     }
     int *arrayInWhichFind = (int *) calloc(amountOfElements, sizeof(int));
