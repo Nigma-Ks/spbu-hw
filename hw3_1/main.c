@@ -75,6 +75,7 @@ int main() {
     }
     float arrayForSort[arraySize] = {0};
     for (int i = 0; i < amountOfElements; i++) {
+        printf("Enter element: ");
         scanf_s("%f", &arrayForSort[i]);
     }
     if (amountOfElements < 10) {
