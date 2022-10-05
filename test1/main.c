@@ -3,7 +3,7 @@
 #define arraySize 200
 
 void insertionSortOfEven(int arrayForSort[], int startIndex, int finishIndex) {
-    if ((finishIndex - startIndex + 1 > 1) && (startIndex >= 0) && (finishIndex >= 0)) {
+    if (finishIndex - startIndex + 1 > 1) {
         int copyOfValue = 0;
         for (int i = startIndex + 1; i <= finishIndex; i++) {
             if (arrayForSort[i]%2 == 0) {
