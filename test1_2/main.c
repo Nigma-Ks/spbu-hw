@@ -20,7 +20,7 @@ void shellSort(int arrayForSort[], int sizeOfArray, int step) {
 }
 
 int main() {
-    printf("This program sorts even numbers in your array from small to big numbers\n"
+    printf("This program sorts numbers in your array from small to big numbers\n"
            "Enter amount of elements in array (only 200 and less): ");
     int amountOfElements = 0;
     scanf_s("%d", &amountOfElements);
