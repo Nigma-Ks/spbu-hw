@@ -2,22 +2,25 @@
 
 #define arraySize 200
 
-void shellSort(int arrayForSort[], int sizeOfArray, int step) {
-    int copyOfValue = 0;
-    for (int i = 0; i < sizeOfArray; i += step) {
-        int indexOfCurrentElement = i;
-        for (int j = i - step; j >= 0; j -= step) {
-            if (arrayForSort[indexOfCurrentElement] < arrayForSort[j]) {
-                copyOfValue = arrayForSort[indexOfCurrentElement];
-                arrayForSort[indexOfCurrentElement] = arrayForSort[j];
-                arrayForSort[j] = copyOfValue;
-                indexOfCurrentElement--;
-            } else {
-                break;
+void shellSort(int arrayForSort[], int amountOfElements) {
+    for (int stepOfSort = (int) amountOfElements / 2; stepOfSort >= 1; stepOfSort--) {
+        int copyOfValue = 0;
+        for (int i = 0; i < amountOfElements; i += stepOfSort) {
+            int indexOfCurrentElement = i;
+            for (int j = i - stepOfSort; j >= 0; j -= stepOfSort) {
+                if (arrayForSort[indexOfCurrentElement] < arrayForSort[j]) {
+                    copyOfValue = arrayForSort[indexOfCurrentElement];
+                    arrayForSort[indexOfCurrentElement] = arrayForSort[j];
+                    arrayForSort[j] = copyOfValue;
+                    indexOfCurrentElement--;
+                } else {
+                    break;
+                }
             }
         }
     }
 }
+
 
 int main() {
     printf("This program sorts numbers in your array from small to big numbers\n"
@@ -34,9 +37,7 @@ int main() {
         printf("Enter element: ");
         scanf_s("%d", &arrayForSort[i]);
     }
-    for (int stepOfSort = (int) amountOfElements / 2; stepOfSort >= 1; stepOfSort--) {
-        shellSort(arrayForSort, amountOfElements, stepOfSort);
-    }
+    shellSort(arrayForSort, amountOfElements);
     printf("Now your array look like this: ");
     for (int i = 0; i < amountOfElements; i++) {
         printf("%d ", arrayForSort[i]);
