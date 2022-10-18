@@ -41,3 +41,23 @@ int amountOfNumbersInFile(FILE *file) {
     }
     return amount;
 }
+
+int searchOfMostRepeatedElement(const int arrayWithNumbers[], int amountOfNumbers) {
+    int maxAmountOfRepeats = 1, mostRepeatedNumber = arrayWithNumbers[0], repeatsCounter = 1;
+    for (int j = 1; j < amountOfNumbers; ++j) {
+        if (arrayWithNumbers[j] != arrayWithNumbers[j - 1]) {
+            if (maxAmountOfRepeats < repeatsCounter) {
+                maxAmountOfRepeats = repeatsCounter;
+                mostRepeatedNumber = arrayWithNumbers[j - 1];
+            }
+            repeatsCounter = 1;
+        } else {
+            ++repeatsCounter;
+        }
+    }
+    if (maxAmountOfRepeats < repeatsCounter) {
+        maxAmountOfRepeats = repeatsCounter; //не используется, но если понадобится количество
+        mostRepeatedNumber = arrayWithNumbers[amountOfNumbers - 1]; //повторов, то оно в этой пременной
+    }
+    return mostRepeatedNumber;
+}
