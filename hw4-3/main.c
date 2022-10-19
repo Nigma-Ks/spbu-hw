@@ -4,13 +4,15 @@
 
 #define maxPhoneLen 16+1
 #define maxLineLen 100
+#define filePath "C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list.txt"
+
 typedef struct {
     char *name;
     char phone[maxPhoneLen];
 } PhoneBookEntry;
 
 int amountOfLinesInFile() {
-    FILE *phoneBook = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list", "r");
+    FILE *phoneBook = fopen(filePath, "r");
     int amount = 0;
     char line[maxLineLen];
     fseek(phoneBook, 0, SEEK_SET);
@@ -26,18 +28,16 @@ int amountOfLinesInFile() {
 
 PhoneBookEntry *readFile() {
     int amountOfLines = amountOfLinesInFile();
-    FILE *phoneBook = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list", "r");
-    if (phoneBook == NULL) {
-        printf("file not found!");
-        return 0;
-    }
+    FILE *phoneBookFile = fopen(filePath, "a+");
+    fclose(phoneBookFile);
+    phoneBookFile = fopen(filePath, "r");
     PhoneBookEntry *arrayOfPhoneEntries = calloc(amountOfLines, sizeof(PhoneBookEntry));
-    fseek(phoneBook, 0, SEEK_SET);
+    fseek(phoneBookFile, 0, SEEK_SET);
     int linesRead = 0;
 
     char phone[maxPhoneLen] = "";
     char name[maxLineLen - maxPhoneLen] = "";
-    while (fscanf(phoneBook, "%s %s", phone, name) != EOF) {
+    while (fscanf(phoneBookFile, "%s %s", phone, name) != EOF) {
         PhoneBookEntry entry;
         strcpy(entry.phone, phone);
         entry.name = calloc(maxLineLen - maxPhoneLen, sizeof(char));
@@ -47,7 +47,7 @@ PhoneBookEntry *readFile() {
         //free(entry.name);
         //free(entry.phone);
     }
-    fclose(phoneBook);
+    fclose(phoneBookFile);
 
     return arrayOfPhoneEntries;
 }
@@ -66,7 +66,7 @@ void addEntry(char *name, char *phone, PhoneBookEntry *phoneBook, int lines) {
 
 
 void writeToFile(PhoneBookEntry *phoneBook, int lines) {
-    FILE *phoneBookFile = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list", "w");
+    FILE *phoneBookFile = fopen(filePath, "w");
     for (int i = 0; i < lines; i++) {
         fprintf(phoneBookFile, "%s %s", phoneBook[i].phone, phoneBook[i].name);
         fprintf(phoneBookFile, "\n");
@@ -114,6 +114,11 @@ void showMenu() {
 }
 
 int main() {
+    FILE *phoneBookFile = fopen("hw4-3\\Phone list.txt", "r");
+    if (phoneBookFile == NULL) {
+        phoneBookFile = fopen("hw4-3\\Phone list.txt", "a+");
+        fclose(phoneBookFile);
+    }
     SetConsoleOutputCP(CP_UTF8);
     PhoneBookEntry *phoneBook = calloc(100, sizeof(PhoneBookEntry));
     int len = amountOfLinesInFile();
@@ -163,4 +168,3 @@ int main() {
     free(phoneBook);
     return 0;
 }
-
