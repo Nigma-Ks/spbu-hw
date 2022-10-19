@@ -2,10 +2,11 @@
 #include <windows.h>
 #include <stdbool.h>
 
+#define maxPhoneLen 16+1
 #define maxLineLen 100
 typedef struct {
     char *name;
-    char phone[17];
+    char phone[maxPhoneLen];
 } PhoneBookEntry;
 
 int amountOfLinesInFile() {
@@ -34,12 +35,12 @@ PhoneBookEntry *readFile() {
     fseek(phoneBook, 0, SEEK_SET);
     int linesRead = 0;
 
-    char phone[17] = "";
-    char name[maxLineLen - 17] = "";
+    char phone[maxPhoneLen] = "";
+    char name[maxLineLen - maxPhoneLen] = "";
     while (fscanf(phoneBook, "%s %s", phone, name) != EOF) {
         PhoneBookEntry entry;
         strcpy(entry.phone, phone);
-        entry.name = calloc(maxLineLen - 17, sizeof(char));
+        entry.name = calloc(maxLineLen - maxPhoneLen, sizeof(char));
         strcpy(entry.name, name);
         arrayOfPhoneEntries[linesRead] = entry;
         linesRead++;
@@ -58,7 +59,7 @@ void showPhoneBook(PhoneBookEntry *arrayOfPhoneEntries, int len) {
 }
 
 void addEntry(char *name, char *phone, PhoneBookEntry *phoneBook, int lines) {
-    phoneBook[lines].name = calloc(maxLineLen - 17, sizeof(char));
+    phoneBook[lines].name = calloc(maxLineLen - maxPhoneLen, sizeof(char));
     strcpy(phoneBook[lines].name, name);
     strcpy(phoneBook[lines].phone, phone);
 }
@@ -125,8 +126,8 @@ int main() {
 
         scanf_s("%d", &choice);
         if (choice == 1) {
-            char *name = calloc(maxLineLen - 17, sizeof(char));
-            char *phone = calloc(17, sizeof(char));
+            char *name = calloc(maxLineLen - maxPhoneLen, sizeof(char));
+            char *phone = calloc(maxPhoneLen, sizeof(char));
             printf("enter entry name: ");
             scanf("%s", name);
             printf("enter entry phone: ");
@@ -139,7 +140,7 @@ int main() {
             printf("your phonebook: \n");
             showPhoneBook(phoneBook, len);
         } else if (choice == 4) {
-            char *phone = calloc(17, sizeof(char));
+            char *phone = calloc(maxPhoneLen, sizeof(char));
             printf("enter searched phone: ");
             scanf("%s", phone);
             if (!findByPhone(phone, phoneBook, len)) {
@@ -147,7 +148,7 @@ int main() {
             }
             free(phone);
         } else if (choice == 3) {
-            char *name = calloc(maxLineLen - 17, sizeof(char));
+            char *name = calloc(maxLineLen - maxPhoneLen, sizeof(char));
             printf("enter searched name: ");
             scanf("%s", name);
             if (!findByName(name, phoneBook, len)) {
@@ -159,7 +160,6 @@ int main() {
             printf("your entries now are saved\n");
         }
     }
-    printf("\n");
     free(phoneBook);
     return 0;
 }
