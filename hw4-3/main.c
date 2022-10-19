@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <stdbool.h>
+
 #define maxLineLen 100
 typedef struct {
     char *name;
@@ -22,7 +23,7 @@ int amountOfLinesInFile() {
     return amount;
 }
 
-PhoneBookEntry* readFile() {
+PhoneBookEntry *readFile() {
     int amountOfLines = amountOfLinesInFile();
     FILE *phoneBook = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list", "r");
     if (phoneBook == NULL) {
@@ -35,13 +36,15 @@ PhoneBookEntry* readFile() {
 
     char phone[17] = "";
     char name[maxLineLen - 17] = "";
-    while(fscanf(phoneBook, "%s %s", phone, name) != EOF) {
+    while (fscanf(phoneBook, "%s %s", phone, name) != EOF) {
         PhoneBookEntry entry;
         strcpy(entry.phone, phone);
         entry.name = calloc(maxLineLen - 17, sizeof(char));
         strcpy(entry.name, name);
         arrayOfPhoneEntries[linesRead] = entry;
         linesRead++;
+        //free(entry.name);
+        //free(entry.phone);
     }
     fclose(phoneBook);
 
@@ -54,15 +57,14 @@ void showPhoneBook(PhoneBookEntry *arrayOfPhoneEntries, int len) {
     }
 }
 
-void addEntry(char* name, char* phone, PhoneBookEntry* phoneBook, int lines) {
-    phoneBook[lines].name = calloc(maxLineLen-17, sizeof(char));
+void addEntry(char *name, char *phone, PhoneBookEntry *phoneBook, int lines) {
+    phoneBook[lines].name = calloc(maxLineLen - 17, sizeof(char));
     strcpy(phoneBook[lines].name, name);
     strcpy(phoneBook[lines].phone, phone);
 }
 
 
-
-void writeToFile(PhoneBookEntry* phoneBook, int lines) {
+void writeToFile(PhoneBookEntry *phoneBook, int lines) {
     FILE *phoneBookFile = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list", "w");
     for (int i = 0; i < lines; i++) {
         fprintf(phoneBookFile, "%s %s", phoneBook[i].phone, phoneBook[i].name);
@@ -70,58 +72,95 @@ void writeToFile(PhoneBookEntry* phoneBook, int lines) {
     }
     fclose(phoneBookFile);
 }
-bool findByName(char* name, PhoneBookEntry* phoneBook, int lines) {
+
+bool findByName(char *name, PhoneBookEntry *phoneBook, int lines) {
     bool found = false;
     for (int i = 0; i < lines; i++) {
         if (!strcmp(phoneBook[i].name, name)) {
-            printf("\n%s - %s\n", phoneBook[i].phone, phoneBook[i].name);
+            if (!found) {
+                printf("Matching entries:\n");
+            }
+            printf("%s - %s\n", phoneBook[i].phone, phoneBook[i].name);
             found = true;
         }
     }
     return found;
 }
 
-bool findByPhone(char* phone, PhoneBookEntry* phoneBook, int lines) {
+bool findByPhone(char *phone, PhoneBookEntry *phoneBook, int lines) {
     bool found = false;
     for (int i = 0; i < lines; i++) {
         if (!strcmp(phoneBook[i].phone, phone)) {
-            printf("\n%s - %s\n", phoneBook[i].phone, phoneBook[i].name);
+            if (!found) {
+                printf("Matching entries:\n");
+            }
+            printf("%s - %s\n", phoneBook[i].phone, phoneBook[i].name);
             found = true;
         }
     }
     return found;
 }
 
+void showMenu() {
+    printf("\nThis is phonebook. Please enter the number of your choice\n"
+           "0 — exit\n"
+           "1 — add entry (name and phone)\n"
+           "2 — print all existing etries\n"
+           "3 — find entry by name\n"
+           "4 — find entry by phone\n"
+           "5 — save phonebook to file\n");
+    printf("number>> ");
+}
 
 int main() {
     SetConsoleOutputCP(CP_UTF8);
-    printf("В этой программе содержится телефонный справочник. Введите число, соответсвующее желаемому результату\n"
-           "0 — выйти\n"
-           "1 — добавить запись (имя и телефон)\n"
-           "2 — распечатать все имеющиеся записи\n"
-           "3 — найти телефон по имени\n"
-           "4 — найти имя по телефону\n"
-           "5 — сохранить текущие данные в файл\n");
-    PhoneBookEntry* phoneBook = calloc(100, sizeof (PhoneBookEntry));
+    PhoneBookEntry *phoneBook = calloc(100, sizeof(PhoneBookEntry));
     int len = amountOfLinesInFile();
-    memcpy(phoneBook, readFile(), len*sizeof(PhoneBookEntry));
-
+    PhoneBookEntry *baseOfPhoneEntries = readFile();
+    memcpy(phoneBook, baseOfPhoneEntries, len * sizeof(PhoneBookEntry));
+    free(baseOfPhoneEntries);
     int choice = -1;
     while (choice != 0) {
+        showMenu();
+
         scanf_s("%d", &choice);
         if (choice == 1) {
-            printf("add entry:");
-            addEntry("sasha", "1111111111111", phoneBook, len);
+            char *name = calloc(maxLineLen - 17, sizeof(char));
+            char *phone = calloc(17, sizeof(char));
+            printf("enter entry name: ");
+            scanf("%s", name);
+            printf("enter entry phone: ");
+            scanf("%s", phone);
+            addEntry(name, phone, phoneBook, len);
             len++;
+            free(name);
+            free(phone);
         } else if (choice == 2) {
+            printf("your phonebook: \n");
             showPhoneBook(phoneBook, len);
-        } else if (choice == 3) {
-            findByPhone("1111111111111", phoneBook, len);
         } else if (choice == 4) {
-            findByName("sasha", phoneBook, len);
+            char *phone = calloc(17, sizeof(char));
+            printf("enter searched phone: ");
+            scanf("%s", phone);
+            if (!findByPhone(phone, phoneBook, len)) {
+                printf("no such entries!\n");
+            }
+            free(phone);
+        } else if (choice == 3) {
+            char *name = calloc(maxLineLen - 17, sizeof(char));
+            printf("enter searched name: ");
+            scanf("%s", name);
+            if (!findByName(name, phoneBook, len)) {
+                printf("no such entries!\n");
+            }
+            free(name);
         } else if (choice == 5) {
             writeToFile(phoneBook, len);
+            printf("your entries now are saved\n");
         }
     }
+    printf("\n");
+    free(phoneBook);
     return 0;
 }
+
