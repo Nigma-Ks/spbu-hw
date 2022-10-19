@@ -44,8 +44,7 @@ PhoneBookEntry *readFile() {
         strcpy(entry.name, name);
         arrayOfPhoneEntries[linesRead] = entry;
         linesRead++;
-        //free(entry.name);
-        //free(entry.phone);
+        free(entry.name);
     }
     fclose(phoneBookFile);
 
