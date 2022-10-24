@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 int main() {
-    FILE *file = fopen("C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-2\\array", "r");
+    FILE *file = fopen("..\\array", "r");
     if (file == NULL) {
         printf("file not found!");
         return 0;
