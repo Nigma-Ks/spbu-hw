@@ -4,7 +4,7 @@
 
 #define maxPhoneLen 16+1
 #define maxLineLen 100
-#define filePath "C:\\Users\\Huawei\\Desktop\\HW\\spbu-hw\\hw4-3\\Phone list.txt"
+#define filePath "..\\Phone list.txt"
 
 typedef struct {
     char *name;
