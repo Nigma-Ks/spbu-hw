@@ -8,7 +8,6 @@ int main() {
         printf("file not found!");
         return 0;
     }
-    //C:\Users\Huawei\Desktop\HW\spbu-hw\hw4-2\array
     int amountOfNumbers = amountOfNumbersInFile(file);
     int *arrayForSort = calloc(amountOfNumbers, sizeof(int));
     fseek(file, 0, SEEK_SET);
