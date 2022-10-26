@@ -75,7 +75,11 @@ int main() {
     scanf_s("%s", expression);
     if (!fromInfixToReversedPolishTransform(expression, amountOfChars, result)) {
         printf("Result: %s\n", result);
+        free(expression);
+        free(result);
         return 0;
     }
+    free(expression);
+    free(result);
     printf("String is not correct\n");
 }
