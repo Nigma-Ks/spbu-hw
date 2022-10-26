@@ -20,4 +20,4 @@ int isEmpty(StackTail *stack); //checks if stack is empty
 
 int push(StackTail *stack, char element); //adds new element with value=element in stack
 
-int pop(StackTail *stack, char *value); //deletes last element in stack and assigns last element value to variable with address int *value
+int pop(StackTail *stack, char *value); //deletes last element in stack and assigns last element value to variable with address char *value
