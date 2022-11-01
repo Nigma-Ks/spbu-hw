@@ -18,7 +18,7 @@ int main() {
     scanf_s("%d", &choice);
     while (choice != 0) {
         while (choice < 0 || choice > 3) {
-            printf("Wrong choice\n");
+            printf("\nWrong choice\n");
             showMenu();
             printf("Enter command: ");
             scanf_s("%d", &choice);
