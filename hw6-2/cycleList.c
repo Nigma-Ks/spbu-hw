@@ -8,7 +8,7 @@ typedef struct CycleListElement {
 } CycleListElement;
 
 typedef struct CycleList {
-    CycleListElement *next;
+    CycleListElement *firstvalue;
 } CycleList;
 
 CycleList *createList() {
@@ -19,26 +19,26 @@ int push(CycleList *cycleList, int value) {
     if (cycleList == NULL) {
         return -2;
     }
-    if (cycleList->next == NULL) {
-        cycleList->next = calloc(1, sizeof(CycleListElement));
+    if (cycleList->firstvalue == NULL) {
+        cycleList->firstvalue = calloc(1, sizeof(CycleListElement));
 
-        if (cycleList->next == NULL) {
+        if (cycleList->firstvalue == NULL) {
             return -1;
         }
 
-        cycleList->next->value = value;
-        cycleList->next->next = NULL;
+        cycleList->firstvalue->value = value;
+        cycleList->firstvalue->next = NULL;
         return 0;
     }
-    if (cycleList->next->next == NULL) {
-        cycleList->next->next = calloc(1, sizeof(CycleListElement));
+    if (cycleList->firstvalue->next == NULL) {
+        cycleList->firstvalue->next = calloc(1, sizeof(CycleListElement));
 
-        if (cycleList->next->next == NULL) {
+        if (cycleList->firstvalue->next == NULL) {
             return -1;
         }
 
-        cycleList->next->next->value = value;
-        cycleList->next->next->next = cycleList->next;
+        cycleList->firstvalue->next->value = value;
+        cycleList->firstvalue->next->next = cycleList->firstvalue;
         return 0;
     }
     CycleListElement *insertion = calloc(1, sizeof(CycleListElement));
@@ -47,9 +47,9 @@ int push(CycleList *cycleList, int value) {
         return -1;
     }
 
-    insertion->next = cycleList->next;
+    insertion->next = cycleList->firstvalue;
     insertion->value = value;
-    CycleListElement *curr = cycleList->next;
+    CycleListElement *curr = cycleList->firstvalue;
     int startValue = curr->value;
     while (curr->next->value != startValue) {
         curr = curr->next;
@@ -63,14 +63,14 @@ int removeByValue(CycleList *cycleList, int value) {
         return -2;
     }
 
-    CycleListElement *curr = cycleList->next;
+    CycleListElement *curr = cycleList->firstvalue;
     if (curr == NULL) {
         return -3;
     }
 
     if (curr->next == NULL) {
         if (curr->value == value) {
-            cycleList->next = NULL;
+            cycleList->firstvalue = NULL;
             return 0;
         }
         return -3;
@@ -78,8 +78,8 @@ int removeByValue(CycleList *cycleList, int value) {
 
     if (curr->next->next == curr) {
         if (curr->value == value) {
-            cycleList->next = cycleList->next->next;
-            cycleList->next->next = NULL;
+            cycleList->firstvalue = cycleList->firstvalue->next;
+            cycleList->firstvalue->next = NULL;
             free(curr);
             return 0;
         }
@@ -100,7 +100,7 @@ int removeByValue(CycleList *cycleList, int value) {
     if (startValueAgain) {
         return -3;
     }
-    if (curr->next != cycleList->next) {
+    if (curr->next != cycleList->firstvalue) {
         curr->value = curr->next->value;
         CycleListElement *forDel = curr->next;
         curr->next = curr->next->next;
@@ -111,7 +111,7 @@ int removeByValue(CycleList *cycleList, int value) {
     CycleListElement *forDel = curr->next;
     curr->next = curr->next->next;
     free(forDel);
-    cycleList->next = curr;
+    cycleList->firstvalue = curr;
     return 0;
 }
 
@@ -119,17 +119,17 @@ int oneElementInList(CycleList *cycleList) {
     if (cycleList == NULL) {
         return -2;
     }
-    return cycleList->next != NULL && cycleList->next->next == NULL;
+    return cycleList->firstvalue != NULL && cycleList->firstvalue->next == NULL;
 }
 
 int nextValueWithMStep(CycleList *cycleList, int currValue, int m) {
     if (cycleList == NULL) {
         return -2;
     }
-    if (cycleList->next == NULL || cycleList->next->next == NULL) {
+    if (cycleList->firstvalue == NULL || cycleList->firstvalue->next == NULL) {
         return -1;
     }
-    CycleListElement *curr = cycleList->next;
+    CycleListElement *curr = cycleList->firstvalue;
     int startValue = curr->value;
     bool startValueAgain = false;
     while (curr->value != currValue && !startValueAgain) {
@@ -151,7 +151,7 @@ int deleteCycleList(CycleList *cycleList) {
     if (cycleList == NULL) {
         return -2;
     }
-    CycleListElement *curr = cycleList->next;
+    CycleListElement *curr = cycleList->firstvalue;
     while (curr != NULL) {
         CycleListElement *forDel = curr;
         curr = curr->next;
@@ -166,14 +166,14 @@ int getValueOfFirst(CycleList *cycleList) {
 
         return -2;
     }
-    return (cycleList->next->value);
+    return (cycleList->firstvalue->value);
 }
 
 int printList(CycleList *cycleList) {
     if (cycleList == NULL) {
         return -2;
     }
-    CycleListElement *curr = cycleList->next;
+    CycleListElement *curr = cycleList->firstvalue;
     printf("\nYour list: ");
 
     if (curr == NULL) {
