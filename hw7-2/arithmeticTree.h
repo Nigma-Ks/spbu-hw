@@ -13,6 +13,6 @@ enum Error assignValueCurr(struct ArithmeticTreeElement **currElement, int value
 
 void deleteTree(struct ArithmeticTree *ArithmeticTree);
 
-int treeRes(struct ArithmeticTree *arithmeticTree);
+int treeResult(struct ArithmeticTree *arithmeticTree);
 
 void printTree(struct ArithmeticTree *arithmeticTree);
