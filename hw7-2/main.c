@@ -50,7 +50,7 @@ int main() {
     }
     printf("\nExpression after algorithm processing: ");
     printTree(arithmeticTree);
-    printf("\nResult is %d\n", treeRes(arithmeticTree));
+    printf("\nResult is %d\n", treeResult(arithmeticTree));
     deleteTree(arithmeticTree);
     free(stack);
     fclose(file);
