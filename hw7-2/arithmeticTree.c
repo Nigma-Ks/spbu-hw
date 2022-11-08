@@ -80,24 +80,24 @@ void deleteTree(ArithmeticTree *ArithmeticTree) {
     free(ArithmeticTree);
 }
 
-int treeResult(ArithmeticTreeElement *arithmeticTreeElement) {
+int treeResultCounting(ArithmeticTreeElement *arithmeticTreeElement) {
     char operation = arithmeticTreeElement->operation;
     if (operation != '\0') {
         if (operation == '*') {
-            return treeResult(arithmeticTreeElement->right) * treeResult(arithmeticTreeElement->left);
+            return treeResultCounting(arithmeticTreeElement->right) * treeResultCounting(arithmeticTreeElement->left);
         } else if (operation == '/') {
-            return (int) treeResult(arithmeticTreeElement->left) / treeResult(arithmeticTreeElement->right);
+            return (int) treeResultCounting(arithmeticTreeElement->left) / treeResultCounting(arithmeticTreeElement->right);
         } else if (operation == '+') {
-            return treeResult(arithmeticTreeElement->right) + treeResult(arithmeticTreeElement->left);
+            return treeResultCounting(arithmeticTreeElement->right) + treeResultCounting(arithmeticTreeElement->left);
         } else {
-            return treeResult(arithmeticTreeElement->left) - treeResult(arithmeticTreeElement->right);
+            return treeResultCounting(arithmeticTreeElement->left) - treeResultCounting(arithmeticTreeElement->right);
         }
     }
     return arithmeticTreeElement->value;
 }
 
-int treeRes(ArithmeticTree *arithmeticTree) {
-    return treeResult(arithmeticTree->root);
+int treeResult(ArithmeticTree *arithmeticTree) {
+    return treeResultCounting(arithmeticTree->root);
 }
 
 void depthPrint(ArithmeticTreeElement *dictionaryElement) {
