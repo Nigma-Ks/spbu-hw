@@ -178,11 +178,14 @@ Error delete(Dictionary *dictionary, int key) {
         return OK;
     }
     if (elementForDelete->left == NULL) {
-        if (rightWay) {
+        if (prevElementForDelete == NULL) {
+            dictionary->root = dictionary->root->right;
+        } else if (rightWay) {
             prevElementForDelete->right = elementForDelete->right;
         } else {
             prevElementForDelete->left = elementForDelete->right;
         }
+        free(elementForDelete->value);
         free(elementForDelete);
         return OK;
     }
