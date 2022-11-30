@@ -72,7 +72,8 @@ void printResult(int **graph, int columns, int rows) {
 
 void cityDistribution(int **graph, int **states, int amountOfCities, int amountOfCapitals) {
     int usedCities = 0;
-    while (usedCities < amountOfCities - 2) { //because two cities already in states
+    int amountOfCitiesToDistribute = amountOfCities - amountOfCapitals;
+    while (usedCities < amountOfCitiesToDistribute) { //because capital cities already in states
         for (int capitalIndex = 0; capitalIndex < amountOfCapitals; capitalIndex++) {
             int prevCityOfCapital = 0;
             int nearestToCapitalCity = 0;
