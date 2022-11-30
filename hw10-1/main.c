@@ -2,15 +2,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define MAXLEN 1000
+#define MAX_LEN INT_MAX
 #define PATH "..//graph.txt"
 
-void addToStatesCities(int **states, int nearestToCapitalCity, int size, int capitalIndex) {
+void addCityToState(int **states, int nearestToCapitalCity, int size, int capitalIndex) {
     for (int i = 0; i < size; i++) {
-        if (states[capitalIndex][i] == 0) {
-            if (nearestToCapitalCity == 0) {
-                nearestToCapitalCity = -1;
-            }
+        if (states[capitalIndex][i] == -1) {
             states[capitalIndex][i] = nearestToCapitalCity;
             return;
         }
@@ -23,23 +20,15 @@ void deleteRoadsToCity(int **graph, int nearestToCapitalCity, int size) {
     }
 }
 
-void lengthenRoadsFromCity(int **graph, int nearestToCapitalCity, int roadToNearest, int size) {
-    for (int i = 0; i < size; i++) {
-        if (graph[nearestToCapitalCity][i]) {
-            graph[nearestToCapitalCity][i] += roadToNearest;
-        }
-    }
-}
-
-int notZeroMinimum(const int *array, int size, int *nearestToCurrCity) {
-    int minimum = MAXLEN;
+int minExistingPath(const int *array, int size, int *nearestToCurrCity) {
+    int minimum = MAX_LEN;
     for (int i = 0; i < size; i++) {
         if (array[i] < minimum && array[i] != 0) {
             minimum = array[i];
             *nearestToCurrCity = i;
         }
     }
-    if (minimum != MAXLEN) {
+    if (minimum != MAX_LEN) {
         return minimum;
     }
     return 0;
@@ -59,8 +48,6 @@ void printResult(int **graph, int columns, int rows) {
         printf("\nState number %d: ", i + 1);
         for (int j = 0; j < columns; j++) {
             if (graph[i][j] == -1) {
-                printf("0 ");
-            } else if (graph[i][j] == 0) {
                 break;
             } else {
                 printf("%d ", graph[i][j]);
@@ -75,40 +62,30 @@ void cityDistribution(int **graph, int **states, int amountOfCities, int amountO
     int amountOfCitiesToDistribute = amountOfCities - amountOfCapitals;
     while (usedCities < amountOfCitiesToDistribute) { //because capital cities already in states
         for (int capitalIndex = 0; capitalIndex < amountOfCapitals; capitalIndex++) {
-            int prevCityOfCapital = 0;
-            int nearestToCapitalCity = 0;
-            int roadToNearest = MAXLEN;
-            for (int townOfState = 0; townOfState < amountOfCities; townOfState++) { //cycle of cities in state
-                if (states[capitalIndex][townOfState] != 0) {
-                    int nearestToCurrCity = 0;
-                    int currLen = 0;
-                    if (states[capitalIndex][townOfState] == -1) { //0-stop-symbol, -1 means index 0
-                        currLen = notZeroMinimum(graph[0], amountOfCities,
-                                                 &nearestToCurrCity); //min len in -1 case
-                    } else {
-                        currLen = notZeroMinimum(graph[states[capitalIndex][townOfState]], amountOfCities,
-                                                 &nearestToCurrCity); //min len
+            int parentCity = 0;
+            int nearestCity = 0;
+            int roadToNearestCityLen = MAX_LEN;
+            for (int townOfStateIndex = 0;
+                 townOfStateIndex < amountOfCities; townOfStateIndex++) { //cycle of cities in state
+                int townOfState = states[capitalIndex][townOfStateIndex];
+                if (townOfState == -1) {
+                    break; // if state towns exhausted
+                }
+                int nearestToCurrCity = 0;
+                int currLen = minExistingPath(graph[townOfState], amountOfCities, &nearestToCurrCity);
+                if (currLen != 0) { // if path exists
+                    if (currLen < roadToNearestCityLen) {
+                        roadToNearestCityLen = currLen;
+                        nearestCity = nearestToCurrCity;
+                        parentCity = townOfState; //for deleting path from previous to not return again
                     }
-                    if (currLen != 0) {
-                        if (currLen < roadToNearest) {
-                            roadToNearest = currLen;
-                            nearestToCapitalCity = nearestToCurrCity;
-                            prevCityOfCapital = states[capitalIndex][townOfState]; //for deleting path from previous to not return again
-                            if (states[capitalIndex][townOfState] == -1) {
-                                prevCityOfCapital = 0;
-                            }
-                        }
-                    }
-                } else {
-                    break;
                 }
             }
-            if (roadToNearest != MAXLEN) {
-                graph[nearestToCapitalCity][prevCityOfCapital] = 0; //deleting path from previous to not return again
-                deleteRoadsToCity(graph, nearestToCapitalCity, amountOfCities); //deleting way to city for other states
-                lengthenRoadsFromCity(graph, nearestToCapitalCity, roadToNearest,
-                                      amountOfCities); //can go there only from states' cities
-                addToStatesCities(states, nearestToCapitalCity, amountOfCities, capitalIndex);
+
+            if (roadToNearestCityLen != MAX_LEN) {
+                graph[nearestCity][parentCity] = 0; //deleting path to previous for not returning again
+                deleteRoadsToCity(graph, nearestCity, amountOfCities); //deleting way to city for other states
+                addCityToState(states, nearestCity, amountOfCities, capitalIndex);
                 usedCities++;
             }
         }
@@ -151,6 +128,11 @@ int **arrayOfStatesWithCities(int *nCities, int *nCapitals, bool *noFile) {
     }
     printGraph(graph, amountOfCities, amountOfCities);
     for (int i = 0; i < amountOfCapitals; i++) {
+        for (int j = 0; j < amountOfCities; j++) {
+            states[i][j] = -1;
+        }
+    }
+    for (int i = 0; i < amountOfCapitals; i++) {
         int capitalNumber = 0;
         fscanf_s(file, "%d", &capitalNumber);
         deleteRoadsToCity(graph, capitalNumber, amountOfCities);
@@ -187,3 +169,4 @@ int main() {
     printf("\n");
     return 0;
 }
+
