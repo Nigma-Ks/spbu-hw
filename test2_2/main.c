@@ -6,8 +6,14 @@ void showMenu() {
            "0 - stop program\n"
            "1 - add new value in the sorted list\n"
            "2 - delete value by index from sorted list\n"
-           "3 - change value by index1 and value by index1 on sum of values\n"
+           "3 - change value by index1 and value by index2 on sum of values\n"
            "4 - print sorted list\n");
+}
+
+void changeValues(int *x, int *y) {
+    int forChange = *x;
+    *x = *y;
+    *y = forChange;
 }
 
 int main() {
@@ -48,10 +54,16 @@ int main() {
             scanf_s("%d", &index1);
             printf("Enter index2: ");
             scanf_s("%d", &index2);
+            if (index1 < index2) {
+                changeValues(&index1, &index2);
+            } else if (index1 == index2) {
+                printf("\nSame indexes, wrong\n");
+            }
             if (removeValue(sortedList, index1, &value1) || removeValue(sortedList, index2, &value2)) {
                 printf("\nThere is no values with those indexes\n");
             } else {
                 insert(sortedList, value1 + value2);
+                printf("\nElements with values %d, %d were removed\n", value2, value1);
                 printf("\nElement with value %d was added\n", value1 + value2);
             }
         } else {
@@ -65,3 +77,4 @@ int main() {
     printf("\n");
     return 0;
 }
+
