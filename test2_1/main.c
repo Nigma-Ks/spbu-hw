@@ -1,8 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
-#define MAX_STRING_LEN 100
 #define FILE_PATH "..\\order.txt"
 
 unsigned long long sum = 0;
@@ -43,13 +41,13 @@ int readFile(bool *wrongStringsInFile) {
     bool correctString = false;
     char chInFile = '\0';
     int indexOfColumn = 1;
-    char *wrongStringBuff = calloc(MAX_STRING_LEN, sizeof(char));
     while (fscanf(file, "%c", &chInFile) != EOF) {
         if (chInFile == '\t') {
             indexOfColumn += 1;
             if (indexOfColumn > 3) {
                 *wrongStringsInFile = true;
-                costAmountColumnReset(&indexOfColumn);
+                fclose(file);
+                return 0;
             }
         } else if (chInFile == '\n') {
             sumCalculation();
@@ -60,16 +58,16 @@ int readFile(bool *wrongStringsInFile) {
                     correctString = amountOrderBuff(chInFile);
                     if (!correctString) {
                         *wrongStringsInFile = true;
-                        fgets(wrongStringBuff, MAX_STRING_LEN, file);
-                        costAmountColumnReset(&indexOfColumn);
+                        fclose(file);
+                        return 0;
                     }
                     break;
                 case 3:
                     correctString = costOrderBuff(chInFile);
                     if (!correctString) {
                         *wrongStringsInFile = true;
-                        fgets(wrongStringBuff, MAX_STRING_LEN, file);
-                        costAmountColumnReset(&indexOfColumn);
+                        fclose(file);
+                        return 0;
                     }
                     break;
                 default:
@@ -78,7 +76,6 @@ int readFile(bool *wrongStringsInFile) {
         }
     }
     sumCalculation();
-    free(wrongStringBuff);
     fclose(file);
     return 0;
 }
@@ -98,4 +95,3 @@ int main() {
     printf("Total sum: %llu\n", sum);
     return 0;
 }
-
