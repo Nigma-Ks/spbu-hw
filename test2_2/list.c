@@ -75,7 +75,6 @@ int removeValue(SortedList *sortedList, int index, int *value) {
         return 0;
     }
     while (currIndex != index) {
-        printf("%d", curr->value);
         curr = curr->next;
         if (curr == NULL) {
             return -1;
