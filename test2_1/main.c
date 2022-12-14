@@ -10,7 +10,7 @@ unsigned long long cost = 0;
 unsigned long long amountOfProducts = 0;
 
 void sumCalculation() {
-    sum += cost*amountOfProducts;//if cost or amount == 0, sum += 0
+    sum += cost * amountOfProducts;//if cost or amount == 0, sum += 0
 }
 
 bool costOrderBuff(char chInFile) {
@@ -29,12 +29,13 @@ bool amountOrderBuff(char chInFile) { //can't be < 0
     return false;
 }
 
-void costAmountColumnReset(int * indexOfColumn) {
+void costAmountColumnReset(int *indexOfColumn) {
     cost = 0;
     amountOfProducts = 0;
     *indexOfColumn = 1;
 }
-int readFile() {
+
+int readFile(bool *wrongStringsInFile) {
     FILE *file = fopen(FILE_PATH, "r");
     if (file == NULL) {
         return -1;
@@ -42,20 +43,23 @@ int readFile() {
     bool correctString = false;
     char chInFile = '\0';
     int indexOfColumn = 1;
-    char* wrongStringBuff = calloc(MAX_STRING_LEN, sizeof(char));
+    char *wrongStringBuff = calloc(MAX_STRING_LEN, sizeof(char));
     while (fscanf(file, "%c", &chInFile) != EOF) {
-        if (chInFile == '\t') {
-            indexOfColumn += 1;//1, 2, 3
+        if (chInFile == '[') {
+            indexOfColumn += 1;
+            if (indexOfColumn > 3) {
+                *wrongStringsInFile = true;
+                costAmountColumnReset(&indexOfColumn);
+            }
         } else if (chInFile == '\n') {
             sumCalculation();
-            indexOfColumn = 1;
-            cost = 0;
-            amountOfProducts = 0;
+            costAmountColumnReset(&indexOfColumn);
         } else {
             switch (indexOfColumn) {
                 case 2:
                     correctString = amountOrderBuff(chInFile);
                     if (!correctString) {
+                        *wrongStringsInFile = true;
                         fgets(wrongStringBuff, MAX_STRING_LEN, file);
                         costAmountColumnReset(&indexOfColumn);
                     }
@@ -63,6 +67,7 @@ int readFile() {
                 case 3:
                     correctString = costOrderBuff(chInFile);
                     if (!correctString) {
+                        *wrongStringsInFile = true;
                         fgets(wrongStringBuff, MAX_STRING_LEN, file);
                         costAmountColumnReset(&indexOfColumn);
                     }
@@ -80,15 +85,17 @@ int readFile() {
 
 int main() {
     printf("This program counts sum of order in file\n");
-    bool fileOpened = !readFile();
+    bool wrongStringsInFile = false;
+    bool fileOpened = !readFile(&wrongStringsInFile);
     if (!fileOpened) {
         printf("File wasn't found\n");
         return 0;
     }
-    if (sum == 0) {
-        printf("There is no goods in order or file incorrect\n");
+    if (wrongStringsInFile) {
+        printf("File incorrect\n");
         return 0;
     }
     printf("Total sum: %llu\n", sum);
     return 0;
 }
+
