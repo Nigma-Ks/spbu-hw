@@ -43,7 +43,7 @@ int main() {
             if (removeValue(sortedList, index, &value)) {
                 printf("\nThere is no such index in list\n");
             } else {
-                printf("\n%d was removed", value);
+                printf("\n%d was removed\n", value);
             }
         } else if (choice == 3) {
             int index1 = 0;
@@ -54,17 +54,19 @@ int main() {
             scanf_s("%d", &index1);
             printf("Enter index2: ");
             scanf_s("%d", &index2);
-            if (index1 < index2) {
-                changeValues(&index1, &index2);
-            } else if (index1 == index2) {
+            if (index1 == index2) {
                 printf("\nSame indexes, wrong\n");
-            }
-            if (removeValue(sortedList, index1, &value1) || removeValue(sortedList, index2, &value2)) {
-                printf("\nThere is no values with those indexes\n");
             } else {
-                insert(sortedList, value1 + value2);
-                printf("\nElements with values %d, %d were removed\n", value2, value1);
-                printf("\nElement with value %d was added\n", value1 + value2);
+                if (index1 < index2) {
+                    changeValues(&index1, &index2);
+                }
+                if (removeValue(sortedList, index1, &value1) || removeValue(sortedList, index2, &value2)) {
+                    printf("\nThere is no values with those indexes\n");
+                } else {
+                    insert(sortedList, value1 + value2);
+                    printf("\nElements with values %d, %d were removed\n", value2, value1);
+                    printf("\nElement with value %d was added\n", value1 + value2);
+                }
             }
         } else {
             printList(sortedList);
@@ -77,4 +79,3 @@ int main() {
     printf("\n");
     return 0;
 }
-
