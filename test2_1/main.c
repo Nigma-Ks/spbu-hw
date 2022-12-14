@@ -45,7 +45,7 @@ int readFile(bool *wrongStringsInFile) {
     int indexOfColumn = 1;
     char *wrongStringBuff = calloc(MAX_STRING_LEN, sizeof(char));
     while (fscanf(file, "%c", &chInFile) != EOF) {
-        if (chInFile == '[') {
+        if (chInFile == '\t') {
             indexOfColumn += 1;
             if (indexOfColumn > 3) {
                 *wrongStringsInFile = true;
