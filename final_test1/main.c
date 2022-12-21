@@ -17,7 +17,7 @@ int lenOctNotationCount(int lenOfBinNotation) {
 int twoInStartPower(int lenOfBinNotation) {
     int twoInStartPower = 1;
     int amountOfNumbersInLastIncompletedTriple = lenOfBinNotation % AMOUNT_OF_DIGIT;
-    if (amountOfNumbersInLastIncompletedTriple != 0) {
+    if (amountOfNumbersInLastIncompletedTriple) {
         int startPower = amountOfNumbersInLastIncompletedTriple - 1;
         for (int i = 0; i < startPower; i++) {
             twoInStartPower *= 2;
