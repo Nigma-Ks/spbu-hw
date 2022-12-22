@@ -1,38 +1,35 @@
 #include <stdio.h>
 
-#define arraySize 200
+#define MAX_ARRAY_SIZE 200
 
 void insertionSort(float arrayForSort[], int startIndex, int finishIndex) {
-    if ((finishIndex - startIndex + 1 > 1) && (startIndex >= 0) && (finishIndex >= 0)) {
+    if (finishIndex > startIndex && startIndex >= 0 && finishIndex >= 0) {
         float copyOfValue = 0;
         for (int i = startIndex + 1; i <= finishIndex; i++) {
-            int indexOfCurrentElement = i;
-            for (int j = i - 1; j >= startIndex; j--) {
-                if (arrayForSort[indexOfCurrentElement] < arrayForSort[j]) {
-                    copyOfValue = arrayForSort[indexOfCurrentElement];
-                    arrayForSort[indexOfCurrentElement] = arrayForSort[j];
-                    arrayForSort[j] = copyOfValue;
-                    indexOfCurrentElement--;
-                } else {
-                    break;
-                }
+            for (int j = i - 1; j >= startIndex && arrayForSort[j + 1] < arrayForSort[j]; j--) {
+                copyOfValue = arrayForSort[j + 1];
+                arrayForSort[j + 1] = arrayForSort[j];
+                arrayForSort[j] = copyOfValue;
             }
         }
     }
 }
 
+void choiceOfSort(int startIndex, int finishIndex, float arrayForSort[]);
+
 void quickSort(float arrayForSort[], int startIndex, int finishIndex) {
-    if ((startIndex >= 0) && (finishIndex >= 0)) {
+    if (finishIndex > startIndex && startIndex >= 0 && finishIndex >= 0) {
         int firstIndexWithBigger = finishIndex;
         float elementForComparison = arrayForSort[startIndex], copyOfValue = 0;
-        for (int i = startIndex + 1; i <= finishIndex; i++) {
-            if (i >= firstIndexWithBigger) break;
+        int i = startIndex + 1;
+        while (i <= finishIndex && i < firstIndexWithBigger) {
             if (arrayForSort[i] >= elementForComparison) {
                 copyOfValue = arrayForSort[i];
                 arrayForSort[i] = arrayForSort[firstIndexWithBigger];
                 arrayForSort[firstIndexWithBigger] = copyOfValue;
                 firstIndexWithBigger--;
-                i--;
+            } else {
+                i++;
             }
         }
         /*
@@ -50,15 +47,17 @@ void quickSort(float arrayForSort[], int startIndex, int finishIndex) {
             arrayForSort[startIndex] = arrayForSort[firstIndexWithBigger];
             arrayForSort[firstIndexWithBigger] = copyOfValue;
         }
-        if (firstIndexWithBigger - startIndex < 10) {
-            insertionSort(arrayForSort, startIndex, firstIndexWithBigger - 1);
+        choiceOfSort(startIndex, firstIndexWithBigger - 1, arrayForSort);
+        choiceOfSort(firstIndexWithBigger + 1, finishIndex, arrayForSort);
+    }
+}
+
+void choiceOfSort(int startIndex, int finishIndex, float arrayForSort[]) {
+    if (finishIndex > startIndex && startIndex >= 0 && finishIndex >= 0) {
+        if (finishIndex - startIndex + 1 < 10) { //amount of elements < 10
+            insertionSort(arrayForSort, startIndex, finishIndex);
         } else {
-            quickSort(arrayForSort, startIndex, firstIndexWithBigger - 1);
-        }
-        if (finishIndex - firstIndexWithBigger < 10) {
-            insertionSort(arrayForSort, firstIndexWithBigger + 1, finishIndex);
-        } else {
-            quickSort(arrayForSort, firstIndexWithBigger + 1, finishIndex);
+            quickSort(arrayForSort, startIndex, finishIndex);
         }
     }
 }
@@ -73,16 +72,12 @@ int main() {
                "(only 200 and less) again: ", amountOfElements);
         scanf_s("%d", &amountOfElements);
     }
-    float arrayForSort[arraySize] = {0};
+    float arrayForSort[MAX_ARRAY_SIZE] = {0};
     for (int i = 0; i < amountOfElements; i++) {
         printf("Enter element: ");
         scanf_s("%f", &arrayForSort[i]);
     }
-    if (amountOfElements < 10) {
-        insertionSort(arrayForSort, 0, amountOfElements - 1);
-    } else {
-        quickSort(arrayForSort, 0, amountOfElements - 1);
-    }
+    choiceOfSort(0, amountOfElements - 1, arrayForSort);
     printf("Now your array look like this: ");
     for (int i = 0; i < amountOfElements; i++) {
         printf("%0.1f ", arrayForSort[i]);
