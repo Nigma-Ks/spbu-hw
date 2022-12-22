@@ -2,6 +2,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define INT_SIZE 32
 #define TWO_IN_POWER 4294967296 //2^32
@@ -64,11 +65,89 @@ void convertToBinString(char *strForNumber, long long number) {
     reverseStr(strForNumber);
 }
 
-int main() {
-    setlocale(LC_ALL, "Russian");
-    long long fstNumber = 0, sndNumber = 0;
+bool testOfTwoOppositeNumbers(bool *callocError) {
+    long long fstNumber = 123, sndNumber = -123;
     char *binFstNumber = calloc(INT_SIZE, sizeof(char));
     char *binSndNumber = calloc(INT_SIZE, sizeof(char));
+    if (binFstNumber == NULL || binSndNumber == NULL) {
+        free(binFstNumber);
+        free(binSndNumber);
+        *callocError = true;
+        return false;
+    }
+    convertToBinString(binFstNumber, fstNumber);
+    convertToBinString(binSndNumber, sndNumber);
+    if (strcmp(binFstNumber, "00000000000000000000000001111011") ||
+        strcmp(binSndNumber, "11111111111111111111111110000101")) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    binSum(binFstNumber, binSndNumber);
+    if (strcmp(binFstNumber, "00000000000000000000000000000000")) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    if (toDec(binFstNumber) != 0) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    free(binFstNumber);
+    free(binSndNumber);
+    return true;
+}
+
+bool testOfTwoNegativeNumbers(bool *callocError) {
+    long long fstNumber = -10, sndNumber = -20;
+    char *binFstNumber = calloc(INT_SIZE, sizeof(char));
+    char *binSndNumber = calloc(INT_SIZE, sizeof(char));
+    if (binFstNumber == NULL || binSndNumber == NULL) {
+        free(binFstNumber);
+        free(binSndNumber);
+        *callocError = true;
+        return false;
+    }
+    convertToBinString(binFstNumber, fstNumber);
+    convertToBinString(binSndNumber, sndNumber);
+    if (strcmp(binFstNumber, "11111111111111111111111111110110") ||
+        strcmp(binSndNumber, "11111111111111111111111111101100")) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    binSum(binFstNumber, binSndNumber);
+    if (strcmp(binFstNumber, "11111111111111111111111111100010")) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    if (toDec(binFstNumber) != -30) {
+        free(binFstNumber);
+        free(binSndNumber);
+        return false;
+    }
+    free(binFstNumber);
+    free(binSndNumber);
+    return true;
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    bool callocError = false;
+    if (!testOfTwoOppositeNumbers(&callocError) || !testOfTwoNegativeNumbers(&callocError)) {
+        if (callocError) {
+            printf("Тесты провалились, ошибка выделения памяти!\n");
+            return 0;
+        }
+        printf("Тесты провалились!\n");
+        return 0;
+    }
+    printf("Тесты пройдены успешно!\n");
+    long long fstNumber = 0, sndNumber = 0;
+    char *binFstNumber = calloc(INT_SIZE + 1, sizeof(char));
+    char *binSndNumber = calloc(INT_SIZE + 1, sizeof(char));
     if (binFstNumber == NULL || binSndNumber == NULL) {
         free(binFstNumber);
         free(binSndNumber);
