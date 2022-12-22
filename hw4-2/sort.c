@@ -1,18 +1,21 @@
+#include <stdlib.h>
+#include <stdbool.h>
 #include "sort.h"
 
 
-void quickSort(int *arrayForSort, int startIndex, int finishIndex) {
-    if ((startIndex >= 0) && (finishIndex >= 0) && (finishIndex - startIndex + 1 > 1)) {
+void quickSort(int arrayForSort[], int startIndex, int finishIndex) {
+    if (finishIndex > startIndex && startIndex >= 0 && finishIndex >= 0) {
         int firstIndexWithBigger = finishIndex;
         int elementForComparison = arrayForSort[startIndex], copyOfValue = 0;
-        for (int i = startIndex + 1; i <= finishIndex; i++) {
-            if (i >= firstIndexWithBigger) break;
+        int i = startIndex + 1;
+        while (i <= finishIndex && i < firstIndexWithBigger) {
             if (arrayForSort[i] >= elementForComparison) {
                 copyOfValue = arrayForSort[i];
                 arrayForSort[i] = arrayForSort[firstIndexWithBigger];
                 arrayForSort[firstIndexWithBigger] = copyOfValue;
                 firstIndexWithBigger--;
-                i--;
+            } else {
+                i++;
             }
         }
         if (arrayForSort[firstIndexWithBigger] >= arrayForSort[startIndex]) {
@@ -30,34 +33,42 @@ void quickSort(int *arrayForSort, int startIndex, int finishIndex) {
     }
 }
 
-int amountOfNumbersInFile(FILE *file) {
-    int amount = 0, value = 0;
-    fseek(file, 0, SEEK_SET);
-    while (!feof(file)) {
-        if (fscanf(file, "%d", &value) != 1) {
-            break;
-        }
-        amount++;
+int *arrayOfNumbersInFile(char *filePath, int *linesRead, int *error) {
+    FILE *file = fopen(filePath, "r");
+    if (file == NULL) {
+        *error = -1;
+        return NULL;
     }
-    return amount;
+    int amount = 0, value = 0;
+    int readResult = 0;
+    while (readResult != EOF) {
+        readResult = fscanf(file, "%d", &value);
+        if (readResult == 0) {
+            *error = -2;
+            fclose(file);
+            return NULL;
+        } else if (readResult == 1) {
+            amount++;
+        }
+    }
+    fclose(file);
+    if (amount == 0) {
+        *error = -4;
+        return NULL;
+    }
+    fopen(filePath, "r");
+    int *arrayForSort = calloc(amount, sizeof(int));
+    if (arrayForSort == NULL) {
+        *error = -3;
+        fclose(file);
+        return NULL;
+    }
+    *linesRead = 0;
+    while (!feof(file)) {
+        fscanf(file, "%d", &arrayForSort[*linesRead]);
+        ++(*linesRead);
+    }
+    fclose(file);
+    return arrayForSort;
 }
 
-int searchOfMostRepeatedElement(const int arrayWithNumbers[], int amountOfNumbers) {
-    int maxAmountOfRepeats = 1, mostRepeatedNumber = arrayWithNumbers[0], repeatsCounter = 1;
-    for (int j = 1; j < amountOfNumbers; ++j) {
-        if (arrayWithNumbers[j] != arrayWithNumbers[j - 1]) {
-            if (maxAmountOfRepeats < repeatsCounter) {
-                maxAmountOfRepeats = repeatsCounter;
-                mostRepeatedNumber = arrayWithNumbers[j - 1];
-            }
-            repeatsCounter = 1;
-        } else {
-            ++repeatsCounter;
-        }
-    }
-    if (maxAmountOfRepeats < repeatsCounter) {
-        maxAmountOfRepeats = repeatsCounter; //не используется, но если понадобится количество
-        mostRepeatedNumber = arrayWithNumbers[amountOfNumbers - 1]; //повторов, то оно в этой пременной
-    }
-    return mostRepeatedNumber;
-}
